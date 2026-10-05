@@ -15,13 +15,29 @@ class CepController extends Controller
 
     public function consultar(Request $request)
     {
-        
+        $request->merge([
+            'cep' => preg_replace('/\D/', '', (string) $request->input('cep')),
+        ]);
        // validação
+        $validacao = $request
+                        ->validate([
+                                'cep' =>'required|digits:8'
+                        ]);
 
+        $cep = $validacao['cep'];
 
        // requisição
+        $resposta = Http::timeout(5)
+        ->withoutVerifying()
+        ->get("https://viacep.com.br/ws/{$cep}/json/");
 
         $dados = $resposta->json();
+
+        if($resposta->failed() || isset($dados['erro'])){
+            return back()
+            ->withInput()
+            ->withErrors(['cep' => 'CEP não encontrado']);
+        }
 
         return view('cep.index', ['endereco' => $dados]);
     }

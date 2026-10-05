@@ -12,12 +12,26 @@
         @csrf
         <input type="text" name="cep" required>
 
+            @error('cep')
+            <p style="color: red;">{{ $message }}</p>
+            @enderror
         <button type="submit">Consultar CEP</button>
 
     </form>
 
     <!-- Mostrar os dados, caso haja -->
     
+  
+    @isset($endereco)
+    <p>Cidade: {{$endereco['localidade']}}</p>
+    <p>UF: {{ $endereco['uf'] }}</p>
+    <p>Estado: {{ $endereco['estado'] }}</p>
+    <p>DDD: {{ $endereco['ddd'] }}</p>
+    <p>Região: {{ $endereco['regiao'] }}</p>
+    @endisset
+ 
+
+   
 
 </body>
 </html>
